@@ -4,13 +4,15 @@ from chotto_iot.sensor_data.sensor_data_type.sensor_data import SensorData
 
 
 @dataclass
-class SensorDataTempHumid(SensorData):
-    temperature: float
-    humid: float
+class SensorDataGeoPressure(SensorData):
+    geo_x: float
+    geo_y: float
+    geo_z: float
+    pressure: float
 
 
 if __name__ == '__main__':
-    data = SensorDataTempHumid('test', 100, 25.11, 30.12)
+    data = SensorDataGeoPressure('test', 100, 0.11, 0.12, 0.13, 1014.11)
     print(data)
 
     values = asdict(data)
