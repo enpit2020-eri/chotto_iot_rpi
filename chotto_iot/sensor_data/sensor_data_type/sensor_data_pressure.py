@@ -1,3 +1,0 @@
-class SensorDataPressure:
-    # + Pressure
-    pass
