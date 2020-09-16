@@ -1,7 +1,7 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 
 
-# interface MqttManagerCallback #fbd4ff
 class MqttManagerCallback(ABC):
-    # + 接続完了通知()
-    pass
+    @abstractmethod
+    def on_connected(self):
+        pass
