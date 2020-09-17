@@ -6,6 +6,8 @@ from chotto_iot.sensor_data.sensor_data_type.sensor_data_acc_gyro import SensorD
 from chotto_iot.sensor_data.sensor_data_type.sensor_data_geo_pressure import SensorDataGeoPressure
 from chotto_iot.sensor_data.sensor_data_type.sensor_data_temp_humid import SensorDataTempHumid
 
+def signed(hex_str):
+    return int.from_bytes(bytes.fromhex(hex_str),"big",signed=True)
 
 class SensorDataParser:
     # + パース(advData): Optional[SensorData]
@@ -39,12 +41,12 @@ class SensorDataParser:
         # print(gacc_x)
 
     def parse_acc_gyro(self, sensor_data, rssi):
-        gacc_x = int(sensor_data[8:12], 16)*0.000244
-        gacc_y = int(sensor_data[12:16], 16)*0.000244
-        gacc_z = int(sensor_data[16:20], 16)*0.000244
-        gyro_x = int(sensor_data[20:24], 16)*0.07
-        gyro_y = int(sensor_data[24:28], 16)*0.07
-        gyro_z = int(sensor_data[28:32], 16)*0.07
+        gacc_x = signed(sensor_data[8:12])*0.000244
+        gacc_y = signed(sensor_data[12:16])*0.000244
+        gacc_z = signed(sensor_data[16:20])*0.000244
+        gyro_x = signed(sensor_data[20:24])*0.07
+        gyro_y = signed(sensor_data[24:28])*0.07
+        gyro_z = signed(sensor_data[28:32])*0.07
         beacon_id_model = int(sensor_data[32:34], 16)
         beacon_id_serial = int(sensor_data[34:40], 16)
         # print(SensorDataAccGyro(beacon_id_serial, rssi, gacc_x, gacc_y, gacc_z, gyro_x, gyro_y, gyro_z))
@@ -52,16 +54,16 @@ class SensorDataParser:
                                  gyro_y, gyro_z)
 
     def parse_geo_pre(self, sensor_data, rssi):
-        geo_x = int(sensor_data[8:12], 16)*0.00058*10
-        geo_y = int(sensor_data[12:16], 16)*0.00058*10
-        geo_z = int(sensor_data[16:20], 16)*0.00058*10
+        geo_x = signed(sensor_data[8:12])*0.00058*10
+        geo_y = signed(sensor_data[12:16])*0.00058*10
+        geo_z = signed(sensor_data[16:20])*0.00058*10
         pre = int(sensor_data[20:26], 16)/4096.0
         beacon_id_model = int(sensor_data[32:34], 16)
         beacon_id_serial = int(sensor_data[34:40], 16)
         return SensorDataGeoPressure(f"{beacon_id_model:02X}{beacon_id_serial:06d}", rssi, geo_x, geo_y, geo_z, pre)
 
     def parse_temp_hum(self, sensor_data, rssi):
-        temp = int(sensor_data[8:12], 16)/100.0
+        temp = signed(sensor_data[8:12])/100.0
         humid = int(sensor_data[12:16], 16)/100.0
         beacon_id_model = int(sensor_data[32:34], 16)
         beacon_id_serial = int(sensor_data[34:40], 16)
