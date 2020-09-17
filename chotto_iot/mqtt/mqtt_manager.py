@@ -4,12 +4,13 @@ from typing import Optional
 from chotto_iot.mqtt.mqtt_manager_callback import MqttManagerCallback
 from chotto_iot.sensor_data.sensor_data_type.sensor_data import SensorData
 
-HOST_ADDRESS = "localhost"
-HOST_PORT = 1883
 
 
 class MqttManager:
-    def __init__(self):
+    def __init__(self, address: str = "127.0.0.1", port: int = 1883):
+        self.address = address
+        self.port = port
+
         # MQTTの接続設定
         self.client = mqtt.Client()  # クラスのインスタンス(実体)の作成
         self.client.on_connect = self.on_connect
@@ -18,15 +19,15 @@ class MqttManager:
         self.callback: Optional[MqttManagerCallback] = None
 
     def start_connection(self):
-        self.client.connect(HOST_ADDRESS, HOST_PORT, 60)  # 接続先は自分自身
+        self.client.connect(self.address, self.port, 60)  # 接続先は自分自身
 
     def on_connect(self, client, userdata, flag, rc):
         callback = self.callback
         if callback is not None:
             callback.on_connected()
 
-    def send_sensordata(self, sensorData: SensorData):
-        self.client.publish("sensorData", sensorData)  # トピック名とメッセージを決めて送信
+    def send_sensor_data(self, sensor_data: SensorData):
+        self.client.publish("/sensorData", sensor_data)  # トピック名とメッセージを決めて送信
 
 
 if __name__ == '__main__':
