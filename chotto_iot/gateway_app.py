@@ -26,11 +26,11 @@ class GatewayApp(BluetoothManagerCallback, MqttManagerCallback):
         self.bluetooth_manager.start_scan()
 
     def on_received_data(self, adv_data: ScanResult):
-        print(f"{adv_data=}")
-
-        data = adv_data.manufacturer_data_map.get("0b01")
+        data = adv_data.manufacturer_data_map.get("010b")
         if data is None:
             return
+
+        print(f"{adv_data=}")
 
         rssi = adv_data.rssi
 
