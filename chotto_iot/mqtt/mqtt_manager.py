@@ -1,3 +1,6 @@
+import json
+from dataclasses import asdict
+
 import paho.mqtt.client as mqtt
 from typing import Optional
 
@@ -27,7 +30,9 @@ class MqttManager:
             callback.on_connected()
 
     def send_sensor_data(self, sensor_data: SensorData):
-        self.client.publish("/sensorData", sensor_data)  # トピック名とメッセージを決めて送信
+        dict_data = asdict(sensor_data)
+        json_data = json.dumps(dict_data)
+        self.client.publish("/sensorData", json_data)  # トピック名とメッセージを決めて送信
 
 
 if __name__ == '__main__':
